@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支払情報を入力してください</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #eaeaea;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 100%; /* 最大幅を100%に設定 */
+            width: 500px; /* 幅を指定 */
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 1em;
+            color: #555;
+        }
+        input, select {
+            width: 100%; /* 幅を100%に設定 */
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box; /* パディングを含めて幅を調整 */
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .confirmation {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>支払情報を入力してください</h1>
+        <form id="paymentForm">
+            <label for="customerNumber">お客様番号（13桁）</label>
+            <input type="text" id="customerNumber" required maxlength="13">
+
+            <label for="paymentMonth">月分</label>
+            <select id="paymentMonth" required>
+                <option value="">選択してください</option>
+                <!-- ここに月を追加します -->
+                <script>
+                    const monthSelect = document.getElementById('paymentMonth');
+                    const today = new Date();
+                    for (let i = 0; i < 6; i++) {
+                        const month = new Date(today.getFullYear(), today.getMonth() - i);
+                        const year = month.getFullYear();
+                        const monthNumber = month.getMonth() + 1; // 月は0から始まるため+1
+                        monthSelect.innerHTML += `<option value="${year}年${monthNumber}月">${year}年${monthNumber}月</option>`;
+                    }
+                </script>
+            </select>
+
+            <label for="paymentDate">支払日</label>
+            <input type="date" id="paymentDate" required>
+
+            <label for="financialInstitution">支払った金融機関</label>
+            <select id="financialInstitution" required>
+                <option value="銀行">銀行</option>
+                <option value="郵便局">郵便局</option>
+            </select>
+
+            <button type="button" onclick="confirmSubmission()">送信</button>
+        </form>
+
+        <div class="confirmation" id="confirmationMessage"></div>
+    </div>
+
+    <script>
+        function confirmSubmission() {
+            const customerNumber = document.getElementById('customerNumber').value;
+            const paymentMonth = document.getElementById('paymentMonth').value;
+            const paymentDate = document.getElementById('paymentDate').value;
+            const financialInstitution = document.getElementById('financialInstitution').value;
+
+            const confirmationText = `
+                この内容で送信しますか？
+                お客様番号: ${customerNumber}
+                月分: ${paymentMonth}
+                支払日: ${paymentDate}
+                支払った金融機関: ${financialInstitution}
+            `;
+
+            if (confirm(confirmationText)) {
+                document.getElementById('paymentForm').reset();
+                // 送信後のメッセージを表示
+                showConfirmationMessage('支払済み連絡が完了しました。ありがとうございました。');
+            }
+        }
+
+        function showConfirmationMessage(message) {
+            const confirmationMessage = document.getElementById('confirmationMessage');
+            confirmationMessage.innerText = message;
+            confirmationMessage.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
